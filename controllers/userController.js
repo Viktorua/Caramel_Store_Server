@@ -18,16 +18,19 @@ class UserController {
             return next(ApiError.badRequest('Некорректный логин или пароль'))
         }
         const candidate = await User.findOne({where: {email}})
+        
         if (candidate) {
             return next(ApiError.badRequest('Пользователь с таким именем уже существует'))
         }
         const hashPassword = await bcrypt.hash(password, 5)
         const user = await User.create({email, role, name, surname, role, password: hashPassword})
+        // const Admin = await Admin.create({email, role, name, surname, role, password: hashPassword})
         const basket = await Basket.create({userId: user.id})
         //const jwt = jwt.sign( {id: user.id, email, role}, process.env.SECRET_KEY, {expiresIn: '24h'})
         const token = generateJwt(user.id, user.email, user.role, user.name, user.surname)
         return res.json({token})
     }
+    
 
     async login(req, res, next) {
         const {email, password} = req.body

@@ -1,3 +1,4 @@
+const { Router } = require('express');
 const jwt = require('jsonwebtoken')
 
 module.exports = function(role) {
@@ -19,5 +20,6 @@ module.exports = function(role) {
         } catch (e) {
             res.status(401).json({message: "Не авторизован"})            
         }
+
     };
 }
