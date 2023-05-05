@@ -1,30 +1,20 @@
 const path = require("path");
 const { Clothes } = require("../models/models");
 const ApiError = require("../error/ApiError");
-const axios = require("axios");
 const express = require("express");
-const app = express();
-
-// const Controller = require('../Controller')
 
 class ClothesController {
   async create(req, res, next) {
     try {
       const { type, description, size, price } = req.body;
-      const file = req.files.image;
-      const pathToFile = `../static/images/${file.name}`;
+      const { file } = req;
 
-      file.mv(path.join(__dirname, pathToFile), (err) => {
-        if (err) {
-          return res.status(500).send(err);
-        }
-      });
       const clothes = await Clothes.create({
         type,
         description,
         size,
         price,
-        img: file.name,
+        img: file.filename,
       });
 
       return res.json(clothes);
@@ -49,7 +39,7 @@ class ClothesController {
 
       include: [{ model: InputDeviceInfo, as: "info" }],
     });
-    return res.json(device);
+    return res.json(clothes);
   }
 }
 

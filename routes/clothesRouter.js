@@ -1,12 +1,26 @@
-const Router = require('express')
-const router = new Router()
-const clothesController = require('../controllers/clothesController')
-const { Clothes } = require('../models/models')
+const Router = require("express");
+const multer = require("multer");
 
-router.post('/', clothesController.create)
-router.get('/', clothesController.getAll)
-router.get('/:id', clothesController.getOne)
+const clothesController = require("../controllers/clothesController");
+const { Clothes } = require("../models/models");
 
-module.exports = router
+const router = new Router();
+
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "static/images");
+  },
+  filename: function (req, { originalname }, callback) {
+    callback(null, originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+router.post("/", upload.single("image"), clothesController.create);
+router.get("/", clothesController.getAll);
+router.get("/:id", clothesController.getOne);
+
+module.exports = router;
 
 // http://localhost:5000/api/clothes/

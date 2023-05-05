@@ -6,6 +6,7 @@ const cors = require("cors");
 const router = require("./routes/index");
 const errorHandler = require("./middleware/ErrorHandler");
 const path = require("path");
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 5000;
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "static")));
 app.use("/api", router);
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Обработка ошибок, последний Middleware
 app.use(errorHandler);
