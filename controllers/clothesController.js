@@ -6,7 +6,7 @@ const express = require("express");
 class ClothesController {
   async create(req, res, next) {
     try {
-      const { type, description, size, price } = req.body;
+      const { type, description, size, price, style, color } = req.body;
       const { file } = req;
 
       const clothes = await Clothes.create({
@@ -15,6 +15,8 @@ class ClothesController {
         size,
         price,
         img: file.filename,
+        style,
+        color,
       });
 
       return res.json(clothes);
@@ -38,6 +40,16 @@ class ClothesController {
       where: { id },
 
       include: [{ model: InputDeviceInfo, as: "info" }],
+    });
+    return res.json(clothes);
+  }
+
+  async getAllByType(req, res) {
+    const { type } = req.params;
+    const clothes = await Clothes.findAll({
+      where: { type },
+
+      include: [{ model: InputDeviceInfo, as: "type" }],
     });
     return res.json(clothes);
   }

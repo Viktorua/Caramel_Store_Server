@@ -4,15 +4,18 @@ const jwt = require("jsonwebtoken");
 class BasketController {
   async getAll(req, res) {
     try {
-      const token = req.headers.authorization.split(" ")[1];
-      const user = jwt.verify(token, process.env.SECRET_KEY);
+      const { userId } = req.body;
+      // const token = req.headers.authorization.split(" ")[1];
+      // const user = jwt.verify(token, process.env.SECRET_KEY);
 
-      const basket = await Basket.findOne({ where: { userId: user.id } });
-      const basket_clothes = await BasketClothes.findAll({
-        where: { basketId: basket.id },
+      const basket = await BasketClothes.findOne({
+        where: { basketId: userId },
       });
+      // const basket_clothes = await BasketClothes.findAll({
+      //   where: { basketId: basket.id },
+      // });
 
-      const clothes = (await basket_clothes).map((value) =>
+      const clothes = (await basket).map((value) =>
         Clothes.findOne({ where: { id: value.clotheId } })
       );
 
@@ -38,17 +41,42 @@ class BasketController {
 
   async addItem(req, res, next) {
     try {
-      const { userId, clotheId } = req.body;
+      console.log(req.body);
+      const {
+        userId,
+        clotheId,
+        // type,
+        // description,
+        // size,
+        // price,
+        // img,
+        // style,
+        // color,
+      } = req.body;
 
-      const basket = await Basket.findOne({ where: { userId } });
-      const clothes = await Clothes.findOne({ where: { id: clotheId } });
+      // const basket = await Basket.findOne({ where: { id: userId } });
+      // const clothes = await Clothes.findOne({ where: { id: clotheId } });
 
-      await BasketClothes.create({ basketId: basket.id, clotheId: clothes.id });
-
-      const basket_clothes = await BasketClothes.findOne({
-        where: { basketId: basket.id, clotheId: clothes.id },
+      await BasketClothes.create({
+        id: clotheId,
+        clotheId,
+        basketId: userId,
+        type: req.body.type,
+        description: req.body.description,
+        size: req.body.size,
+        price: req.body.price,
+        img: req.body.img,
+        style: req.body.style || "длтлд",
+        color: req.body.color || "красный",
       });
-      return res.json({ basket_clothes });
+
+      // const basket_clothes = await BasketClothes.findOne({
+      //   where: { basketId: userId, id: clotheId },
+      // });
+
+      // console.log("sdf", basket_clothes);
+
+      return res.json({});
     } catch (e) {
       return res.json(e.message);
     }

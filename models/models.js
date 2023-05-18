@@ -1,62 +1,72 @@
-const database = require('../db')
-const {DataTypes} = require('sequelize')
+const database = require("../db");
+const { DataTypes } = require("sequelize");
 
+const User = database.define("user", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  email: { type: DataTypes.STRING, unique: true, notNull: true },
+  password: { type: DataTypes.STRING, notNull: true },
+  name: { type: DataTypes.STRING, notNull: true },
+  surname: { type: DataTypes.STRING, notNull: true },
+  role: { type: DataTypes.STRING, defaultValue: "USER" },
+});
 
-const User = database.define('user', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    email: {type: DataTypes.STRING, unique: true, notNull: true},
-    password: {type: DataTypes.STRING, notNull: true},
-    name: {type: DataTypes.STRING,  notNull: true},
-    surname: {type: DataTypes.STRING, notNull: true},
-    role: {type: DataTypes.STRING, defaultValue: "USER"},
-})
+// const Admin = database.define("Admin", {
+//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+//   email: { type: DataTypes.STRING, unique: true, notNull: true },
+//   password: { type: DataTypes.STRING, notNull: true },
+//   name: { type: DataTypes.STRING, notNull: true },
+//   surname: { type: DataTypes.STRING, notNull: true },
+//   role: { type: DataTypes.STRING, defaultValue: "Admin" },
+// });
 
-const Admin = database.define('Admin', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    email: {type: DataTypes.STRING, unique: true, notNull: true},
-    password: {type: DataTypes.STRING, notNull: true},
-    name: {type: DataTypes.STRING,  notNull: true},
-    surname: {type: DataTypes.STRING, notNull: true},
-    role: {type: DataTypes.STRING, defaultValue: "Admin"},
-})
+const Clothes = database.define("clothes", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING },
+  img: { type: DataTypes.STRING },
+  description: { type: DataTypes.TEXT },
+  price: { type: DataTypes.INTEGER },
+  type: { type: DataTypes.STRING },
+  size: { type: DataTypes.INTEGER },
+  style: { type: DataTypes.STRING },
+  color: { type: DataTypes.STRING },
+});
 
-const Clothes = database.define('clothes', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    name: {type: DataTypes.STRING},
-    img: {type: DataTypes.STRING},
-    description: {type: DataTypes.TEXT},
-    price: {type: DataTypes.INTEGER},
-    type: { type: DataTypes.STRING},
-    size: {type: DataTypes.INTEGER}
-})
+const Basket = database.define("basket", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING },
+  img: { type: DataTypes.STRING },
+  description: { type: DataTypes.TEXT },
+  price: { type: DataTypes.INTEGER },
+  type: { type: DataTypes.STRING },
+  size: { type: DataTypes.INTEGER },
+  style: { type: DataTypes.STRING },
+  color: { type: DataTypes.STRING },
+});
 
+const BasketClothes = database.define("basket_clothes", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING },
+  img: { type: DataTypes.STRING },
+  description: { type: DataTypes.TEXT },
+  price: { type: DataTypes.INTEGER },
+  type: { type: DataTypes.STRING },
+  size: { type: DataTypes.INTEGER },
+  style: { type: DataTypes.STRING },
+  color: { type: DataTypes.STRING },
+});
 
-const Basket = database.define('basket', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-})
+User.hasOne(Basket);
+Basket.belongsTo(User);
 
-const BasketClothes = database.define('basket_clothes', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-})
+Basket.hasMany(BasketClothes);
+BasketClothes.belongsTo(Basket);
 
-
-User.hasOne(Basket)
-Basket.belongsTo(User)
-
-Admin.hasOne(Basket)
-Basket.belongsTo(Admin)
-
-Basket.hasMany(BasketClothes)
-BasketClothes.belongsTo(Basket)
-
-Clothes.hasMany(BasketClothes)
-BasketClothes.belongsTo(Clothes)
-
+Clothes.hasMany(BasketClothes);
+BasketClothes.belongsTo(Clothes);
 
 module.exports = {
-    Admin,
-    User,
-    Basket,
-    Clothes,
-    BasketClothes
-}
+  User,
+  Basket,
+  Clothes,
+  BasketClothes,
+};

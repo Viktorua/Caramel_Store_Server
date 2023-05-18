@@ -20,6 +20,7 @@ const upload = multer({ storage });
 router.post("/", upload.single("image"), clothesController.create);
 router.get("/", clothesController.getAll);
 router.get("/:id", clothesController.getOne);
+router.get("/:type", clothesController.getAllByType);
 
 module.exports = router;
 
